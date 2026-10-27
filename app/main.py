@@ -5,11 +5,13 @@ from app.deps import get_current_user, get_db , require_admin
 from app.routers import auth
 from app.schemas.user import UserOut
 from app.routers import auth, categories
+from app.routers import products
 
 app = FastAPI(title="E-commerce API")
 
 app.include_router(auth.router)
 app.include_router(categories.router)
+app.include_router(products.router)
 
 @app.get("/health")
 def health():
