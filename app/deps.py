@@ -9,6 +9,7 @@ from app.models.user import User
 
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/auth/login")
 
+
 def get_db():
     db = SessionLocal()
     try:
@@ -16,7 +17,7 @@ def get_db():
     finally:
         db.close()
 
-        
+
 def get_current_user(
     token: str = Depends(oauth2_scheme), db: Session = Depends(get_db)
 ) -> User:
@@ -40,5 +41,3 @@ def require_admin(user: User = Depends(get_current_user)) -> User:
     if user.role != "admin":
         raise HTTPException(status_code=403, detail="Admin access required")
     return user
-
-

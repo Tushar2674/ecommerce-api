@@ -5,6 +5,7 @@ from sqlalchemy.orm import Mapped, mapped_column
 
 from app.db.base import Base
 
+
 class Product(Base):
     __tablename__ = "products"
 
@@ -17,5 +18,5 @@ class Product(Base):
     is_active: Mapped[bool] = mapped_column(default=True)
     created_at: Mapped[datetime] = mapped_column(server_default=func.now())
     updated_at: Mapped[datetime] = mapped_column(
-    server_default=func.now(), onupdate=func.now()
-)
+        server_default=func.now(), onupdate=func.now()
+    )

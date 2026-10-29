@@ -1,11 +1,12 @@
-from fastapi import APIRouter , Depends
-from sqlalchemy.orm import Session 
+from fastapi import APIRouter, Depends
+from sqlalchemy.orm import Session
 
-from app.deps import get_db , require_admin
-from app.schemas.products import ProductCreate , ProductUpdate , ProductOut
+from app.deps import get_db, require_admin
+from app.schemas.products import ProductCreate, ProductUpdate, ProductOut
 from app.services import products as product_service
 
-router = APIRouter(prefix="/products" , tags=["Products"])
+router = APIRouter(prefix="/products", tags=["Products"])
+
 
 @router.post(
     "",
@@ -15,6 +16,7 @@ router = APIRouter(prefix="/products" , tags=["Products"])
 )
 def create_product(data: ProductCreate, db: Session = Depends(get_db)):
     return product_service.create_product(db, data)
+
 
 @router.get("/{product_id}", response_model=ProductOut)
 def get_product(product_id: int, db: Session = Depends(get_db)):

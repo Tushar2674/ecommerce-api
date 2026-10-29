@@ -16,7 +16,10 @@ router = APIRouter(prefix="/auth", tags=["auth"])
 def register(data: UserCreate, db: Session = Depends(get_db)):
     return register_user(db, data.email, data.password)
 
+
 @router.post("/login", response_model=Token)
-def login(form_data: OAuth2PasswordRequestForm = Depends(), db: Session = Depends(get_db)):
+def login(
+    form_data: OAuth2PasswordRequestForm = Depends(), db: Session = Depends(get_db)
+):
     access_token = authenticate_user(db, form_data.username, form_data.password)
     return {"access_token": access_token, "token_type": "bearer"}
