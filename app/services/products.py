@@ -54,8 +54,15 @@ def delete_product(db: Session, product_id: int) -> None:
     product.is_active = False
     db.commit()
 
-def list_products(db:Session , page:int ,size:int)-> dict:
+def list_products(db:Session ,category_id, min_page, max_page, page:int ,size:int)-> dict:
     stmt=select(Product).where(Product.is_active.is_(True))
+    if category_id is not None :
+        stmt=stmt.where(Product.category_id==category_id)
+
+    if min_page is not None :
+        stmt=stmt.where(Product.price>=min_page)
+    if max_page is not None :
+        stmt=stmt.where(Product.price<max_page)
     total=db.scalar(select(func.count()).select_from(stmt.subquery()))
     stmt = stmt.order_by(Product.id).offset((page - 1) * size).limit(size)
     items = db.execute(stmt).scalars().all()
