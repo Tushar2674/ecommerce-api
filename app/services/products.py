@@ -4,6 +4,7 @@ from sqlalchemy.orm import Session
 from app.models.category import Category
 from app.models.product import Product
 from app.schemas.products import ProductCreate, ProductUpdate
+from sqlalchemy import func, select
 
 
 def _get_or_404(db: Session, product_id: int) -> Product:
@@ -52,3 +53,11 @@ def delete_product(db: Session, product_id: int) -> None:
     product = get_product(db, product_id)
     product.is_active = False
     db.commit()
+
+def list_products(db:Session , page:int ,size:int)-> dict:
+    stmt=select(Product).where(Product.is_active.is_(True))
+    total=db.scalar(select(func.count()).select_from(stmt.subquery()))
+    stmt = stmt.order_by(Product.id).offset((page - 1) * size).limit(size)
+    items = db.execute(stmt).scalars().all()
+
+    return {"items": items, "total": total, "page": page, "size": size}

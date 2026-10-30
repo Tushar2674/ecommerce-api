@@ -31,3 +31,9 @@ class ProductOut(BaseModel):
     is_active: bool
     created_at: datetime
     updated_at: datetime
+
+class ProductPage(BaseModel):
+   items: list[ProductOut]
+   total : int 
+   page : int 
+   size : int 
