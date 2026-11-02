@@ -54,8 +54,11 @@ def delete_product(db: Session, product_id: int) -> None:
     product.is_active = False
     db.commit()
 
-def list_products(db:Session ,category_id, min_page, max_page, page:int ,size:int)-> dict:
+def list_products(db:Session ,search ,category_id, min_page, max_page, sort , page:int ,size:int)-> dict:
     stmt=select(Product).where(Product.is_active.is_(True))
+    if search is not None:
+        stmt = stmt.where(Product.name.startswith(search, autoescape=True))
+
     if category_id is not None :
         stmt=stmt.where(Product.category_id==category_id)
 
@@ -64,7 +67,14 @@ def list_products(db:Session ,category_id, min_page, max_page, page:int ,size:in
     if max_page is not None :
         stmt=stmt.where(Product.price<max_page)
     total=db.scalar(select(func.count()).select_from(stmt.subquery()))
-    stmt = stmt.order_by(Product.id).offset((page - 1) * size).limit(size)
-    items = db.execute(stmt).scalars().all()
+    orders = {
+        "newest": Product.created_at.desc(),
+        "price_asc": Product.price.asc(),
+        "price_desc": Product.price.desc(),
+        "name": Product.name.asc(),
+    }
+    stmt = stmt.order_by(orders[sort], Product.id)
+    stmt = stmt.offset((page - 1) * size).limit(size)
 
+    items = db.execute(stmt).scalars().all()
     return {"items": items, "total": total, "page": page, "size": size}
