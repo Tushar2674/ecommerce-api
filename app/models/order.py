@@ -1,8 +1,12 @@
 from datetime import datetime
 from decimal import Decimal
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from app.models.order_item import OrderItem
 
 from sqlalchemy import Enum, ForeignKey, Numeric, func
-from sqlalchemy.orm import Mapped, mapped_column
+from sqlalchemy.orm import Mapped, mapped_column , relationship
 
 from app.db.base import Base
 
@@ -17,3 +21,4 @@ class Order(Base):
     )
     total_amount: Mapped[Decimal] = mapped_column(Numeric(10, 2))
     created_at: Mapped[datetime] = mapped_column(server_default=func.now())
+    items: Mapped[list["OrderItem"]] = relationship(back_populates="order")

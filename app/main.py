@@ -6,11 +6,13 @@ from app.routers import auth
 from app.schemas.user import UserOut
 from app.routers import auth, categories
 from app.routers import products
+from app.routers import orders
 
 app = FastAPI(title="E-commerce API")
 
 app.include_router(auth.router)
 app.include_router(categories.router)
+app.include_router(orders.router)
 app.include_router(products.router)
 
 
