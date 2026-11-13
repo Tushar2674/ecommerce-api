@@ -1,7 +1,7 @@
 from decimal import Decimal
 from fastapi import HTTPException
 from sqlalchemy import select, update
-from sqlalchemy.orm import Session
+from sqlalchemy.orm import Session , selectinload
 from app.models import Order, OrderItem, Product
 from app.schemas.order import OrderCreate, OrderOut, OrderItemOut
 from app.models import User
@@ -37,3 +37,16 @@ def place_order(db:Session , user: User, data: OrderCreate)-> Order:
     db.commit()
     db.refresh(order)
     return order
+
+
+def list_orders(db:Session , user: User , page:int , size:int)-> list[Order]:
+    stmt=(
+        select(Order)
+        .where(Order.user_id==user.id)
+        .options(selectinload(Order.items))
+        .order_by(Order.id.desc())
+        .offset((page-1)*size)
+        .limit(size)
+    )
+    return list(db.execute(stmt).scalars().all())
+
