@@ -50,3 +50,22 @@ def list_orders(db:Session , user: User , page:int , size:int)-> list[Order]:
     )
     return list(db.execute(stmt).scalars().all())
 
+def cancel_order(db:Session , user:User , order_id:int)->Order:
+    order=db.execute(select(Order).where(Order.id==order_id).with_for_update()).scalar_one_or_none()
+    if order is None or (order.user_id !=user.id and user.role!="admin"):
+        raise HTTPException(404,"Order not found")
+    if order.status != "pending":
+        raise HTTPException(409, f"Order is already {order.status}")
+    ids = sorted({item.product_id for item in order.items})
+    products = {p.id: p for p in db.execute(
+            select(Product).where(Product.id.in_(ids)).order_by(Product.id).with_for_update()
+       ).scalars().all()}
+
+    for item in order.items:
+        products[item.product_id].stock += item.quantity
+
+    order.status = "cancelled"
+
+    db.commit();
+    db.refresh(order);
+    return order

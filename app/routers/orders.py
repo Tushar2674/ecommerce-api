@@ -25,3 +25,11 @@ def list_my_orders(
     user: User = Depends(get_current_user),
 ):
     return order_service.list_orders(db, user, page, size)
+
+@router.patch("/{order_id}/cancel", response_model=OrderOut)
+def cancel_order(
+    order_id:int,
+    db:Session=Depends(get_db),
+    user:User =Depends(get_current_user),
+):
+    return order_service.cancel_order(db,user,order_id)
