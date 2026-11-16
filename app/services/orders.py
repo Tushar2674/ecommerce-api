@@ -5,6 +5,7 @@ from sqlalchemy.orm import Session , selectinload
 from app.models import Order, OrderItem, Product
 from app.schemas.order import OrderCreate, OrderOut, OrderItemOut
 from app.models import User
+from app.services.audit_logs import log_action
 
 def place_order(db:Session , user: User, data: OrderCreate)-> Order:
     wanted: dict[int,int]={}
@@ -34,6 +35,7 @@ def place_order(db:Session , user: User, data: OrderCreate)-> Order:
         total_amount+=product.price*quantity
         product.stock-=quantity
     order.total_amount=total_amount
+    log_action(db, user.id, "order.create", "order", order.id)
     db.commit()
     db.refresh(order)
     return order
@@ -65,6 +67,7 @@ def cancel_order(db:Session , user:User , order_id:int)->Order:
         products[item.product_id].stock += item.quantity
 
     order.status = "cancelled"
+    log_action(db, user.id, "order.cancel", "order", order.id)
 
     db.commit();
     db.refresh(order);

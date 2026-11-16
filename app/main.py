@@ -7,6 +7,8 @@ from app.schemas.user import UserOut
 from app.routers import auth, categories
 from app.routers import products
 from app.routers import orders
+from app.routers import admin
+
 
 app = FastAPI(title="E-commerce API")
 
@@ -14,6 +16,7 @@ app.include_router(auth.router)
 app.include_router(categories.router)
 app.include_router(orders.router)
 app.include_router(products.router)
+app.include_router(admin.router)
 
 
 @app.get("/health")
