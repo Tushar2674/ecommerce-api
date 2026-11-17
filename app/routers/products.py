@@ -2,7 +2,7 @@ from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session
 
 from app.deps import get_db, require_admin
-from app.schemas.products import ProductCreate, ProductUpdate, ProductOut , ProductPage
+from app.schemas.products import ProductCreate, ProductUpdate, ProductOut, ProductPage
 from app.services import products as product_service
 from fastapi import Query
 from decimal import Decimal
@@ -44,15 +44,17 @@ def delete_product(product_id: int, db: Session = Depends(get_db)):
     product_service.delete_product(db, product_id)
 
 
-@router.get("",response_model=ProductPage)
+@router.get("", response_model=ProductPage)
 def list_products(
-    search : str | None = Query(default=None, min_length=1, max_length=100),
-    category_id :int | None = None,
-    min_price :Decimal|None =Query(default=None , ge=0),
-    max_price : Decimal | None =Query(default =None ,ge=0),
-    sort : Literal["newest","price_asc","price_desc","name"] ="newest",
-    page:int=Query(default=1,ge=1),
-    size:int=Query(default=20,ge=1,le=100),
-    db: Session=Depends(get_db),
+    search: str | None = Query(default=None, min_length=1, max_length=100),
+    category_id: int | None = None,
+    min_price: Decimal | None = Query(default=None, ge=0),
+    max_price: Decimal | None = Query(default=None, ge=0),
+    sort: Literal["newest", "price_asc", "price_desc", "name"] = "newest",
+    page: int = Query(default=1, ge=1),
+    size: int = Query(default=20, ge=1, le=100),
+    db: Session = Depends(get_db),
 ):
-    return product_service.list_products(db,search ,category_id, min_price, max_price ,sort,page,size)
+    return product_service.list_products(
+        db, search, category_id, min_price, max_price, sort, page, size
+    )

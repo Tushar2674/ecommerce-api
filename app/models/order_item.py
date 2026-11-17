@@ -1,8 +1,9 @@
 from decimal import Decimal
 
 from sqlalchemy import ForeignKey, Numeric
-from sqlalchemy.orm import Mapped, mapped_column , relationship
+from sqlalchemy.orm import Mapped, mapped_column, relationship
 from typing import TYPE_CHECKING
+
 if TYPE_CHECKING:
     from app.models.order import Order
 

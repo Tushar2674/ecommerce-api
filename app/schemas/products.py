@@ -32,8 +32,9 @@ class ProductOut(BaseModel):
     created_at: datetime
     updated_at: datetime
 
+
 class ProductPage(BaseModel):
-   items: list[ProductOut]
-   total : int 
-   page : int 
-   size : int 
+    items: list[ProductOut]
+    total: int
+    page: int
+    size: int

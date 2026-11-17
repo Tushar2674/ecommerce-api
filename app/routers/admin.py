@@ -1,7 +1,7 @@
-from fastapi import APIRouter , Depends , Query 
+from fastapi import APIRouter, Depends, Query
 from sqlalchemy.orm import Session
 
-from app.deps import get_db , require_admin
+from app.deps import get_db, require_admin
 from app.schemas.audit_logs import AuditLogOut
 from app.services import audit_logs as audit_service
 

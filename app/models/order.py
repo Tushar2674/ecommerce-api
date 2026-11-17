@@ -6,7 +6,7 @@ if TYPE_CHECKING:
     from app.models.order_item import OrderItem
 
 from sqlalchemy import Enum, ForeignKey, Numeric, func
-from sqlalchemy.orm import Mapped, mapped_column , relationship
+from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from app.db.base import Base
 
