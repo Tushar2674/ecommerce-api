@@ -6,8 +6,17 @@ from app.deps import get_current_user, get_db
 from app.routers import admin, auth, categories, orders, products
 from app.schemas.user import UserOut
 
+from slowapi import _rate_limit_exceeded_handler
+from slowapi.errors import RateLimitExceeded
+from slowapi.middleware import SlowAPIMiddleware
+
 app = FastAPI(title="E-commerce API")
 
+from app.core.limiter import limiter
+
+app.state.limiter = limiter
+app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
+app.add_middleware(SlowAPIMiddleware)
 app.include_router(auth.router)
 app.include_router(categories.router)
 app.include_router(orders.router)

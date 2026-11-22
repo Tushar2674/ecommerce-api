@@ -13,6 +13,7 @@ from app.main import app
 from app.models.category import Category
 from app.models.product import Product
 from app.models.user import User
+from app.core.limiter import limiter
 
 TEST_DB_URL = settings.database_url.rsplit("/", 1)[0] + "/ecommerce_test"
 assert TEST_DB_URL.endswith("_test"), (
@@ -55,6 +56,8 @@ def seed(session_factory):
 
 @pytest.fixture()
 def client(session_factory):
+    limiter.enabled = False
+
     def override_get_db():
         db = session_factory()
         try:
