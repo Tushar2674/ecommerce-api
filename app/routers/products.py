@@ -7,6 +7,7 @@ from sqlalchemy.orm import Session
 from app.deps import get_db, require_admin
 from app.schemas.products import ProductCreate, ProductOut, ProductPage, ProductUpdate
 from app.services import products as product_service
+from app.core.cache import cache_get, cache_set, products_version
 
 router = APIRouter(prefix="/products", tags=["Products"])
 
@@ -55,6 +56,24 @@ def list_products(
     size: int = Query(default=20, ge=1, le=100),
     db: Session = Depends(get_db),
 ):
-    return product_service.list_products(
-        db, search, category_id, min_price, max_price, sort, page, size
+    key = (
+        f"products:list:v{products_version()}:{search}:{category_id}:"
+        f"{min_price}:{max_price}:{sort}:{page}:{size}"
     )
+    cached = cache_get(key)
+    if cached is not None:
+        return cached
+
+    result = product_service.list_products(
+        db,
+        search=search,
+        category_id=category_id,
+        min_price=min_price,
+        max_price=max_price,
+        sort=sort,
+        page=page,
+        size=size,
+    )
+    payload = ProductPage.model_validate(result).model_dump(mode="json")
+    cache_set(key, payload)
+    return payload

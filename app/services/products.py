@@ -1,3 +1,5 @@
+from decimal import Decimal
+
 from fastapi import HTTPException
 from sqlalchemy import func, select
 from sqlalchemy.orm import Session
@@ -56,20 +58,28 @@ def delete_product(db: Session, product_id: int) -> None:
 
 
 def list_products(
-    db: Session, search, category_id, min_page, max_page, sort, page: int, size: int
+    db: Session,
+    search: str | None,
+    category_id: int | None,
+    min_price: Decimal | None,
+    max_price: Decimal | None,
+    sort: str,
+    page: int,
+    size: int,
 ) -> dict:
     stmt = select(Product).where(Product.is_active.is_(True))
+
     if search is not None:
         stmt = stmt.where(Product.name.startswith(search, autoescape=True))
-
     if category_id is not None:
         stmt = stmt.where(Product.category_id == category_id)
+    if min_price is not None:
+        stmt = stmt.where(Product.price >= min_price)
+    if max_price is not None:
+        stmt = stmt.where(Product.price <= max_price)
 
-    if min_page is not None:
-        stmt = stmt.where(Product.price >= min_page)
-    if max_page is not None:
-        stmt = stmt.where(Product.price < max_page)
     total = db.scalar(select(func.count()).select_from(stmt.subquery()))
+
     orders = {
         "newest": Product.created_at.desc(),
         "price_asc": Product.price.asc(),
