@@ -1,14 +1,10 @@
-from fastapi import FastAPI, Depends
+from fastapi import Depends, FastAPI
 from sqlalchemy import text
 from sqlalchemy.orm import Session
-from app.deps import get_current_user, get_db, require_admin
-from app.routers import auth
-from app.schemas.user import UserOut
-from app.routers import auth, categories
-from app.routers import products
-from app.routers import orders
-from app.routers import admin
 
+from app.deps import get_current_user, get_db
+from app.routers import admin, auth, categories, orders, products
+from app.schemas.user import UserOut
 
 app = FastAPI(title="E-commerce API")
 
@@ -33,9 +29,3 @@ def health_db(db: Session = Depends(get_db)):
 @app.get("/me", response_model=UserOut)
 def me(current_user=Depends(get_current_user)):
     return current_user
-
-
-@app.get("/admin")
-def admin(current_user=Depends(get_current_user)):
-    if Depends(require_admin(current_user)):
-        return {"message": "Admin access granted", "admin": current_user.email}

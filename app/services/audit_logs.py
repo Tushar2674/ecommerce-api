@@ -1,6 +1,7 @@
-from sqlalchemy.orm import Session
-from app.models.audit_logs import AuditLog
 from sqlalchemy import select
+from sqlalchemy.orm import Session
+
+from app.models.audit_logs import AuditLog
 
 
 def log_action(

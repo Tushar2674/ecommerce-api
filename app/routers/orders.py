@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Depends, Query
 from sqlalchemy.orm import Session
 
-from app.deps import get_db, get_current_user
+from app.deps import get_current_user, get_db
 from app.models.user import User
 from app.schemas.order import OrderCreate, OrderOut
 from app.services import orders as order_service

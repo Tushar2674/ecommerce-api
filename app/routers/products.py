@@ -1,12 +1,12 @@
-from fastapi import APIRouter, Depends
+from decimal import Decimal
+from typing import Literal
+
+from fastapi import APIRouter, Depends, Query
 from sqlalchemy.orm import Session
 
 from app.deps import get_db, require_admin
-from app.schemas.products import ProductCreate, ProductUpdate, ProductOut, ProductPage
+from app.schemas.products import ProductCreate, ProductOut, ProductPage, ProductUpdate
 from app.services import products as product_service
-from fastapi import Query
-from decimal import Decimal
-from typing import Literal
 
 router = APIRouter(prefix="/products", tags=["Products"])
 

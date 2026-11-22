@@ -1,19 +1,18 @@
 from decimal import Decimal
+
 import pytest
-from sqlalchemy import create_engine
+from fastapi.testclient import TestClient
+from sqlalchemy import create_engine, update
 from sqlalchemy.orm import sessionmaker
+
 import app.models
 from app.core.config import settings
 from app.db.base import Base
+from app.deps import get_db
+from app.main import app
 from app.models.category import Category
 from app.models.product import Product
 from app.models.user import User
-from fastapi.testclient import TestClient
-from sqlalchemy import update
-
-from app.deps import get_db
-from app.main import app
-
 
 TEST_DB_URL = settings.database_url.rsplit("/", 1)[0] + "/ecommerce_test"
 assert TEST_DB_URL.endswith("_test"), (

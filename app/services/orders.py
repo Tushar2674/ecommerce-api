@@ -1,10 +1,11 @@
 from decimal import Decimal
+
 from fastapi import HTTPException
-from sqlalchemy import select, update
+from sqlalchemy import select
 from sqlalchemy.orm import Session, selectinload
-from app.models import Order, OrderItem, Product
-from app.schemas.order import OrderCreate, OrderOut, OrderItemOut
-from app.models import User
+
+from app.models import Order, OrderItem, Product, User
+from app.schemas.order import OrderCreate
 from app.services.audit_logs import log_action
 
 
@@ -28,10 +29,10 @@ def place_order(db: Session, user: User, data: OrderCreate) -> Order:
         if product.stock < quantity:
             raise HTTPException(409, f"Not enough stock for product {product_id}")
 
-    order = Order(user_id=user.id, total_amount=Decimal("0"))
+    order = Order(user_id=user.id, total_amount=Decimal(0))
     db.add(order)
     db.flush()
-    total_amount = Decimal("0")
+    total_amount = Decimal(0)
     for product_id, quantity in wanted.items():
         product = products.get(product_id)
         order_item = OrderItem(

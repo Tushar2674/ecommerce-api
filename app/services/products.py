@@ -1,10 +1,10 @@
 from fastapi import HTTPException
+from sqlalchemy import func, select
 from sqlalchemy.orm import Session
 
 from app.models.category import Category
 from app.models.product import Product
 from app.schemas.products import ProductCreate, ProductUpdate
-from sqlalchemy import func, select
 
 
 def _get_or_404(db: Session, product_id: int) -> Product:
