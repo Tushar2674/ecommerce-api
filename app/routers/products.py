@@ -4,10 +4,10 @@ from typing import Literal
 from fastapi import APIRouter, Depends, Query
 from sqlalchemy.orm import Session
 
+from app.core.cache import cache_get, cache_set, products_version
 from app.deps import get_db, require_admin
 from app.schemas.products import ProductCreate, ProductOut, ProductPage, ProductUpdate
 from app.services import products as product_service
-from app.core.cache import cache_get, cache_set, products_version
 
 router = APIRouter(prefix="/products", tags=["Products"])
 

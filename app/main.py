@@ -1,14 +1,13 @@
 from fastapi import Depends, FastAPI
+from slowapi import _rate_limit_exceeded_handler
+from slowapi.errors import RateLimitExceeded
+from slowapi.middleware import SlowAPIMiddleware
 from sqlalchemy import text
 from sqlalchemy.orm import Session
 
 from app.deps import get_current_user, get_db
 from app.routers import admin, auth, categories, orders, products
 from app.schemas.user import UserOut
-
-from slowapi import _rate_limit_exceeded_handler
-from slowapi.errors import RateLimitExceeded
-from slowapi.middleware import SlowAPIMiddleware
 
 app = FastAPI(title="E-commerce API")
 
