@@ -4,6 +4,7 @@ from fastapi import HTTPException
 from sqlalchemy import func, select
 from sqlalchemy.orm import Session
 
+from app.core.cache import bump_products_version
 from app.models.category import Category
 from app.models.product import Product
 from app.schemas.products import ProductCreate, ProductUpdate
@@ -22,6 +23,7 @@ def create_product(db: Session, data: ProductCreate) -> Product:
     product = Product(**data.model_dump())
     db.add(product)
     db.commit()
+    bump_products_version()
     db.refresh(product)
     return product
 
@@ -47,6 +49,7 @@ def update_product(db: Session, product_id: int, data: ProductUpdate) -> Product
     for key, value in changes.items():
         setattr(product, key, value)
     db.commit()
+    bump_products_version()
     db.refresh(product)
     return product
 
@@ -55,6 +58,9 @@ def delete_product(db: Session, product_id: int) -> None:
     product = get_product(db, product_id)
     product.is_active = False
     db.commit()
+    bump_products_version()
+    db.refresh(product)
+    return product
 
 
 def list_products(

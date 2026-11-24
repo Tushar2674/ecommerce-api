@@ -4,6 +4,7 @@ from fastapi import HTTPException
 from sqlalchemy import select
 from sqlalchemy.orm import Session, selectinload
 
+from app.core.cache import bump_products_version
 from app.models import Order, OrderItem, Product, User
 from app.schemas.order import OrderCreate
 from app.services.audit_logs import log_action
@@ -47,6 +48,7 @@ def place_order(db: Session, user: User, data: OrderCreate) -> Order:
     order.total_amount = total_amount
     log_action(db, user.id, "order.create", "order", order.id)
     db.commit()
+    bump_products_version()
     db.refresh(order)
     return order
 
@@ -91,5 +93,6 @@ def cancel_order(db: Session, user: User, order_id: int) -> Order:
     log_action(db, user.id, "order.cancel", "order", order.id)
 
     db.commit()
+    bump_products_version()
     db.refresh(order)
     return order
