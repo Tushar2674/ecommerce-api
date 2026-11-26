@@ -1,6 +1,6 @@
 # E-commerce Management API
 
-![CI]([https://github.com/Tushar2674/ecommerce-api/actions/workflows/ci.yml/badge.svg](https://github.com/Tushar2674/ecommerce-api/actions/workflows/ci.yml/badge.svg))
+![CI](https://github.com/Tushar2674/ecommerce-api/actions/workflows/ci.yml/badge.svg)
 
 A backend API for an online store: user accounts with roles, a product catalogue, and orders that
 never oversell stock. Built with FastAPI and MySQL.
