@@ -8,7 +8,7 @@ class Settings(BaseSettings):
     jwt_algorithm: str = "HS256"
     access_token_expire_minutes: int = 30
     rate_limit_enabled: bool = True
-    
+
     model_config = SettingsConfigDict(env_file=".env", extra="ignore")
 
 
